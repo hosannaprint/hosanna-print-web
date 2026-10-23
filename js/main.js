@@ -8,7 +8,7 @@
   'use strict';
 
   var CONFIG = {
-    /* Kam sa dopyt odosiela: berie sa z atribútu action formulára (send.php).
+    /* Kam sa dopyt odosiela: berie sa z atribútu action formulára (Web3Forms).
        Ak server nie je dostupný (napr. statický hosting bez PHP alebo otvorenie súboru z disku),
        formulár ponúkne náhradné odoslanie cez e-mailového klienta na adresu nižšie. */
     requestTimeout: 15000,
@@ -324,11 +324,11 @@
 
   /* -------------------------------------------------------------------
      Kontaktný formulár – dopyt
-     1. Validácia na strane prehliadača (rovnaké pravidlá kontroluje aj send.php).
+     1. Validácia na strane prehliadača (rovnaké pravidlá kontroluje aj Web3Forms).
         Chyby sa ukazujú po opustení poľa a pri odoslaní; pole s chybou dostane
         aria-invalid a text chyby je prepojený cez aria-describedby.
      2. Antispam: skryté pole (honeypot) + minimálny čas vyplnenia.
-     3. Odoslanie cez fetch na send.php (bez obnovenia stránky) s časovým limitom.
+     3. Odoslanie cez fetch na Web3Forms (bez obnovenia stránky) s časovým limitom.
      4. Po úspechu sa zobrazí potvrdenie. Ak server nie je dostupný, používateľ
         nepríde o text – ponúkneme odoslanie cez e-mailového klienta.
      ------------------------------------------------------------------- */
@@ -472,7 +472,7 @@
         signal: ctrl ? ctrl.signal : undefined
       }).then(function (res) {
         return res.json().catch(function () { return null; }).then(function (json) {
-          if (res.ok && json && json.ok) return json;
+          if (res.ok && json && (json.ok || json.success)) return json;  // Web3Forms vracia success, vlastný backend ok
           var err = new Error((json && json.message) || 'Server error');
           err.type = res.status === 422 && json && json.errors ? 'validation' : 'server';
           err.errors = json && json.errors;

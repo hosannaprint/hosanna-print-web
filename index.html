@@ -371,9 +371,13 @@
         </div>
 
         <div class="form-card" data-reveal>
-          <!-- Formulár: action ukazuje na send.php (odoslanie e-mailom na serveri s PHP).
-               main.js ho odosiela cez fetch bez obnovenia stránky; bez JS funguje aj klasické odoslanie. -->
-          <form class="inquiry" id="inquiry-form" action="send.php" method="post" novalidate data-inquiry>
+          <!-- Formulár: odosiela sa cez Web3Forms (statický hosting, bez servera).
+               main.js ho posiela cez fetch bez obnovenia stránky; bez JS funguje aj klasické odoslanie. -->
+          <form class="inquiry" id="inquiry-form" action="https://api.web3forms.com/submit" method="post" novalidate data-inquiry>
+            <input type="hidden" name="access_key" value="fa57a286-d6f6-4a86-973e-41adcb59bfa0">
+            <input type="hidden" name="subject" value="Nový dopyt z print.hosanna.sk">
+            <input type="hidden" name="from_name" value="Hosanna Print — web">
+            <input type="checkbox" name="botcheck" style="display:none" tabindex="-1" autocomplete="off">
             <div class="inquiry__head">
               <h3 class="inquiry__title">Formulár dopytu</h3>
               <span class="badge">Nezáväzný dopyt</span>
