@@ -1,232 +1,472 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="sk">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Hosanna Print — Tlačíme s úctou k detailu | Poprad</title>
-<meta name="description" content="Malé print štúdio z Gerlachova pri Poprade. Plagáty, vizitky, letáky, hrnčeky a laser gravírovanie na dreve, koži a akryle.">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Hosanna print – tlačiarenské a dizajnové štúdio</title>
+  <meta name="description" content="Hosanna print – tlačiarenské a dizajnové štúdio. Vizitky, oznámenia, plagáty, fotografie a grafický dizajn. Navrhneme, vytlačíme a doručíme až k vám domov.">
+  <meta name="theme-color" content="#798c7d">
+  <meta name="color-scheme" content="light">
 
-<link rel="icon" href="assets/logo.svg" type="image/svg+xml">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Hosanna print – tlačiarenské a dizajnové štúdio">
+  <meta property="og:description" content="Navrhneme, vytlačíme a doručíme tlačoviny, ktoré pôsobia prémiovo.">
+  <meta property="og:image" content="assets/img/hero-poster.jpg">
+  <meta property="og:locale" content="sk_SK">
 
-<!-- Fonts: Bespoke Serif (Fontshare) + DM Sans (Google Fonts) -->
-<link rel="preconnect" href="https://api.fontshare.com" crossorigin>
-<link rel="preconnect" href="https://cdn.fontshare.com" crossorigin>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://api.fontshare.com/v2/css?f%5B%5D=bespoke-serif@400,500,700&display=swap">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&display=swap">
+  <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
 
-<link rel="stylesheet" href="css/style.css">
+  <!-- Písma: Fraunces (nadpisy, elegantný „tlačiarenský" serif) + Manrope (text, čistý a dobre čitateľný).
+       Obe majú plnú podporu slovenskej diakritiky (latin-ext). -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..600;1,9..144,300..500&family=Manrope:wght@400;500;600;700;800&display=swap">
+
+  <!-- Three.js sa načítava z CDN cez import map. Hlavné skripty sú klasické (nie moduly) a knižnicu
+       si dotiahnu cez dynamický import() – vďaka tomu web funguje na serveri aj po otvorení súboru
+       priamo z disku (file://), kde by lokálne ES moduly prehliadač zablokoval. -->
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+  <link rel="modulepreload" href="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js" crossorigin>
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+        "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+      }
+    }
+  </script>
+
+  <link rel="stylesheet" href="css/styles.css">
+  <script>document.documentElement.classList.add('js');</script>
+  <noscript><style>.experience{height:auto!important}.stage{position:relative!important}.story,.story-progress,.stage-loader,.printer-canvas,.scroll-cue{display:none!important}[data-reveal]{opacity:1!important;transform:none!important}</style></noscript>
 </head>
 <body>
+  <a class="skip-link" href="#sluzby">Preskočiť na obsah</a>
 
-<a class="skip-link" href="#hero">Preskočiť na obsah</a>
+  <!-- ============ SVG sprite: logo + ikony (jeden zdroj, použité cez <use>) ============ -->
+  <svg class="sprite" aria-hidden="true" focusable="false">
+    <!-- Logo Hosanna print – vektorizované z dodaného súboru „logo" (tvar 1:1, farbu preberá z CSS cez currentColor) -->
+    <symbol id="i-logo" viewBox="0 0 1643 1645"><path id="logo-path" fill="currentColor" d="M 812 0 C 812 1 801 1 788 1 C 759 2 728 5 723 7 C 716 10 712 14 710 19 C 705 28 705 28 722 94 C 726 107 730 121 731 123 C 734 133 747 183 750 195 C 757 232 762 271 759 266 C 758 265 746 247 731 226 C 717 205 699 180 691 169 C 636 91 623 72 618 67 C 605 54 589 47 570 45 C 556 44 550 46 515 59 C 510 61 504 64 503 65 C 499 66 476 77 470 79 C 431 96 336 155 322 171 C 311 183 312 202 325 216 C 328 218 334 226 340 232 C 364 257 406 299 440 328 C 497 380 560 431 690 531 C 726 559 741 573 746 582 C 752 596 753 747 746 758 C 742 765 733 768 726 764 C 723 763 712 749 663 692 C 507 505 435 437 302 349 C 296 345 266 328 259 324 C 254 321 246 317 243 315 C 225 306 208 304 191 310 C 174 316 164 326 136 368 C 109 409 80 464 61 510 C 58 519 53 529 52 533 C 47 544 47 559 51 567 C 59 582 114 637 160 675 C 203 710 306 782 352 809 C 354 810 361 814 368 818 C 375 822 382 827 384 828 C 386 829 393 833 400 837 C 406 840 413 844 415 845 C 416 846 419 847 420 848 C 423 850 437 858 454 866 C 458 869 465 872 469 874 C 475 878 487 884 510 896 C 517 899 527 905 533 908 C 539 911 550 917 557 920 C 563 923 569 927 570 927 C 570 927 579 932 589 937 C 606 946 625 956 662 976 C 672 981 680 985 680 985 C 681 985 684 987 689 989 C 693 992 702 997 709 1000 C 732 1012 740 1019 747 1033 L 751 1041 750 1062 C 750 1113 747 1196 745 1201 C 742 1208 732 1211 725 1207 C 724 1206 702 1188 678 1167 C 654 1145 624 1118 610 1106 C 597 1094 580 1079 574 1073 C 553 1053 515 1022 493 1005 C 475 992 467 986 452 976 C 436 965 407 947 396 941 C 393 939 387 936 381 932 C 359 920 296 888 293 888 C 293 888 290 887 286 885 C 268 876 215 857 195 851 C 136 836 103 831 55 831 L 26 831 20 833 C 4 841 -1 852 1 877 C 7 959 23 1050 37 1081 C 49 1106 91 1146 146 1185 C 165 1198 194 1217 208 1225 C 213 1228 219 1231 220 1232 C 232 1240 335 1292 340 1292 C 340 1292 343 1293 347 1295 C 350 1297 356 1299 359 1300 C 361 1301 365 1303 367 1304 C 371 1306 387 1312 405 1319 C 413 1322 422 1326 424 1327 C 425 1327 430 1329 434 1330 C 438 1332 442 1333 444 1334 C 445 1335 451 1337 458 1340 C 478 1347 498 1354 505 1356 C 528 1365 572 1380 595 1387 C 692 1420 714 1428 721 1432 C 731 1437 737 1445 741 1457 C 742 1462 742 1471 741 1543 C 741 1631 740 1627 747 1635 C 752 1640 757 1642 772 1643 C 808 1645 875 1644 885 1641 C 892 1639 899 1632 901 1626 C 902 1623 902 1600 902 1540 L 902 1459 904 1452 C 907 1443 915 1435 923 1431 C 928 1428 952 1420 1017 1398 C 1043 1389 1064 1382 1065 1382 C 1066 1381 1076 1378 1087 1374 C 1148 1353 1236 1321 1259 1311 C 1261 1310 1263 1309 1263 1309 C 1264 1309 1305 1291 1315 1287 C 1319 1285 1328 1281 1335 1278 C 1432 1233 1525 1172 1579 1117 C 1601 1094 1608 1081 1616 1053 C 1618 1041 1625 1009 1627 1000 C 1635 955 1639 920 1641 887 C 1642 877 1643 868 1643 867 C 1644 865 1644 860 1643 862 C 1643 863 1642 861 1642 858 C 1641 848 1634 839 1623 833 L 1618 831 1589 831 C 1556 831 1542 832 1506 838 C 1442 849 1350 883 1277 924 C 1263 932 1245 942 1242 944 C 1180 981 1119 1027 1069 1073 C 1057 1084 1046 1094 991 1143 C 975 1157 962 1169 961 1169 C 950 1180 920 1206 918 1207 C 909 1212 898 1207 897 1196 C 896 1190 892 1052 892 1046 C 894 1030 907 1014 926 1004 C 932 1001 939 997 943 996 C 948 993 972 980 1006 962 C 1012 959 1036 947 1058 935 C 1080 924 1099 913 1102 912 C 1110 908 1202 860 1215 853 C 1264 826 1316 794 1364 762 C 1410 731 1470 686 1491 669 C 1492 667 1497 663 1502 659 C 1539 628 1586 579 1592 567 C 1595 561 1596 548 1594 542 C 1593 537 1585 516 1582 510 C 1553 443 1526 393 1488 342 C 1476 325 1470 319 1460 314 C 1441 304 1422 304 1400 316 C 1347 342 1275 391 1224 435 C 1191 463 1171 481 1143 509 C 1090 561 1062 594 957 719 C 915 768 917 766 909 766 C 902 765 899 763 896 757 C 893 748 891 662 893 613 C 895 589 895 587 897 582 C 903 571 917 559 968 519 C 1147 381 1212 325 1293 243 C 1326 209 1328 205 1328 192 C 1328 177 1324 172 1302 155 C 1251 119 1201 91 1143 66 C 1118 55 1099 48 1090 46 C 1064 42 1037 52 1021 72 C 1016 77 997 104 943 182 C 940 186 926 206 911 228 L 883 268 883 258 C 885 236 890 205 898 177 C 901 163 903 158 913 120 C 917 107 921 93 922 88 C 923 83 925 77 925 75 C 930 60 936 35 936 30 C 936 20 929 10 920 7 C 915 6 895 3 873 2 C 850 1 813 0 812 0"/></symbol>
 
-<header class="nav" id="nav">
-  <div class="nav__inner">
-    <a class="nav__brand" href="#hero">
-      <img class="nav__logo" src="assets/logo.svg" alt="" width="30" height="30">
-      <span class="nav__name">Hosanna Print</span>
-    </a>
-    <nav class="nav__links" aria-label="Hlavná navigácia">
-      <a class="nav__link" href="#o-nas">O nás</a>
-      <a class="nav__link" href="#sluzby">Služby</a>
-      <a class="nav__link" href="#postup">Ako to funguje</a>
-      <a class="nav__link" href="#kontakt">Kontakt</a>
+    <symbol id="i-print" viewBox="0 0 24 24"><path d="M6.5 9V3.5h11V9"/><rect x="3" y="9" width="18" height="8" rx="2"/><path d="M6.5 14h11v6.5h-11z"/><path d="M17 12h.01"/></symbol>
+    <symbol id="i-card" viewBox="0 0 24 24"><rect x="2.5" y="5" width="19" height="14" rx="2"/><circle cx="8" cy="10.5" r="2"/><path d="M5 16c.6-1.5 1.7-2.3 3-2.3s2.4.8 3 2.3M14 10h5M14 13.5h3.5"/></symbol>
+    <symbol id="i-photo" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="9.5" r="1.8"/><path d="m21 15.5-4.5-4.5L7 20"/></symbol>
+    <symbol id="i-envelope" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3.5 7 8.5 6 8.5-6"/><path d="M12 17.2c-1.6-1-2.6-1.9-2.6-3 0-.7.5-1.2 1.2-1.2.6 0 1 .3 1.4.8.4-.5.8-.8 1.4-.8.7 0 1.2.5 1.2 1.2 0 1.1-1 2-2.6 3z"/></symbol>
+    <symbol id="i-tag" viewBox="0 0 24 24"><path d="M20.6 13.4 13.4 20.6a2 2 0 0 1-2.8 0L3 13V3h10l7.6 7.6a2 2 0 0 1 0 2.8z"/><circle cx="7.5" cy="7.5" r="1.5"/></symbol>
+    <symbol id="i-calendar" viewBox="0 0 24 24"><rect x="3" y="4.5" width="18" height="16" rx="2"/><path d="M3 9.5h18M8 2.5v4M16 2.5v4"/><path d="m9.3 15 1.9 1.9 3.6-3.8"/></symbol>
+    <symbol id="i-nib" viewBox="0 0 24 24"><path d="M12 21.5 6 13l2.5-8h7L18 13z"/><circle cx="12" cy="12" r="1.6"/><path d="M12 13.6v7.9M8.5 5h7"/></symbol>
+    <symbol id="i-layout" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9.5 9v12"/><path d="M13 13h4.5M13 16.5h3"/></symbol>
+    <symbol id="i-filecheck" viewBox="0 0 24 24"><path d="M14 3H6.5A2 2 0 0 0 4.5 5v14a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2V8.5z"/><path d="M14 3v5.5h5.5"/><path d="m8.8 14.6 2.2 2.2 4.2-4.3"/></symbol>
+    <symbol id="i-wand" viewBox="0 0 24 24"><path d="m3.5 20.5 11-11"/><path d="m13 8 3 3"/><path d="M17.5 2.5 18.4 5l2.6.9-2.6.9-.9 2.6-.9-2.6-2.6-.9 2.6-.9z"/><path d="M7 3.5 7.5 5 9 5.5 7.5 6 7 7.5 6.5 6 5 5.5 6.5 5z"/></symbol>
+
+    <symbol id="i-chat" viewBox="0 0 24 24"><path d="M20.5 12a8.5 8.5 0 0 1-12.3 7.6L3.5 20.5l1-4.4A8.5 8.5 0 1 1 20.5 12z"/><path d="M8.5 10.5h7M8.5 14h4.5"/></symbol>
+    <symbol id="i-pen" viewBox="0 0 24 24"><path d="m12.5 19.5 7-7 2.5 2.5-7 7z"/><path d="m18 13.5-1.5-7.5L2.5 2.5 6 16.5l7.5 1.5z"/><path d="m2.5 2.5 7.4 7.4"/><circle cx="11.2" cy="11.2" r="1.8"/></symbol>
+    <symbol id="i-truck" viewBox="0 0 24 24"><path d="M2.5 6h11.5v10.5H2.5z"/><path d="M14 9.5h4l3.5 3.5v3.5H14"/><circle cx="7" cy="17.5" r="1.9"/><circle cx="17.5" cy="17.5" r="1.9"/></symbol>
+
+    <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></symbol>
+    <symbol id="i-chev-left" viewBox="0 0 24 24"><path d="m14.5 6-6 6 6 6"/></symbol>
+    <symbol id="i-chev-right" viewBox="0 0 24 24"><path d="m9.5 6 6 6-6 6"/></symbol>
+    <symbol id="i-pause" viewBox="0 0 24 24"><path d="M9 6v12M15 6v12"/></symbol>
+    <symbol id="i-play" viewBox="0 0 24 24"><path d="M8 5.5v13l10-6.5z"/></symbol>
+    <symbol id="i-mail" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3.5 7 8.5 6 8.5-6"/></symbol>
+    <symbol id="i-phone" viewBox="0 0 24 24"><path d="M21 16.5v3a2 2 0 0 1-2.2 2A19.5 19.5 0 0 1 2.5 5.2 2 2 0 0 1 4.5 3h3a2 2 0 0 1 2 1.7c.1 1 .4 1.9.7 2.8a2 2 0 0 1-.5 2.1L8.4 10.9a16 16 0 0 0 4.7 4.7l1.3-1.3a2 2 0 0 1 2.1-.5c.9.3 1.8.6 2.8.7a2 2 0 0 1 1.7 2z"/></symbol>
+    <symbol id="i-pin" viewBox="0 0 24 24"><path d="M20 10.5c0 6-8 11.5-8 11.5s-8-5.5-8-11.5a8 8 0 0 1 16 0z"/><circle cx="12" cy="10.5" r="2.8"/></symbol>
+    <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.2 2"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24"><path d="m5 12.5 4.5 4.5L19 7.5"/></symbol>
+    <symbol id="i-alert" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7.5v5.5M12 16.5h.01"/></symbol>
+    <symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 8h16M4 16h16"/></symbol>
+    <symbol id="i-close" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></symbol>
+    <symbol id="i-drag" viewBox="0 0 24 24"><path d="M8 12h8M5 9l-3 3 3 3M19 9l3 3-3 3"/></symbol>
+  </svg>
+
+  <!-- ============ Navigácia ============
+       Logo je podľa zadania samostatne v ľavom hornom rohu (bez lišty či iných prvkov naň naviazaných).
+       Navigácia preto žije oddelene v pravom hornom rohu ako plávajúca „pilulka". -->
+  <header class="site-nav" data-nav>
+    <nav class="site-nav__inner" aria-label="Hlavná navigácia">
+      <ul class="site-nav__links" id="nav-links">
+        <li><a href="#sluzby" data-nav-link>Služby</a></li>
+        <li><a href="#postup" data-nav-link>Postup</a></li>
+        <li><a href="#klienti" data-nav-link>Klienti</a></li>
+        <li><a href="#kontakt" class="site-nav__cta" data-nav-link>Poslať dopyt</a></li>
+      </ul>
+      <button class="site-nav__toggle" type="button" aria-expanded="false" aria-controls="nav-links" aria-label="Otvoriť menu" data-nav-toggle>
+        <svg class="icon icon--open" aria-hidden="true"><use href="#i-menu"/></svg>
+        <svg class="icon icon--close" aria-hidden="true"><use href="#i-close"/></svg>
+      </button>
     </nav>
-    <a class="btn btn--small" href="#kontakt">Napíšte nám</a>
-  </div>
-</header>
+  </header>
 
-<main>
+  <main>
+    <!-- =====================================================================
+         1 + 2) HERO S VIDEOM + 3D TLAČIAREŇ VIAZANÁ NA SCROLL
+         Zadanie chce, aby sa 3D tlačiareň zobrazila hneď po načítaní a zároveň aby hero malo
+         video pozadie na celú výšku. Preto sú obe vrstvy v jednej „scéne" (sticky stage):
+         na začiatku vidno video, logo a tlačiareň; scrollovaním sa video prelne do čistého
+         svetlého štúdia a tlačiareň prejde štyrmi fázami tlače. Výška sekcie určuje dĺžku scrollu.
+         ===================================================================== -->
+    <section id="uvod" class="experience" data-tone="dark" aria-label="Úvod – ako vzniká tlač">
+      <div class="stage">
+        <div class="hero-media" aria-hidden="true">
+          <!-- Zdroje videa sú v data-src: main.js ich pripojí iba na dostatočne výkonných zariadeniach
+               a pri rýchlom pripojení. Inak ostáva zobrazený záložný obrázok (poster). -->
+          <video class="hero-video" autoplay muted loop playsinline preload="none" poster="assets/img/hero-poster.jpg" disablepictureinpicture>
+            <source data-src="assets/video/hero.webm" data-src-small="assets/video/hero-720.webm" type="video/webm">
+            <source data-src="assets/video/hero.mp4" data-src-small="assets/video/hero-720.mp4" type="video/mp4">
+          </video>
+          <div class="hero-media__tint"></div>
+        </div>
+        <div class="stage-backdrop" aria-hidden="true"></div>
 
-  <section class="hero" id="hero">
-    <div class="hero__inner reveal">
-      <img class="hero__logo" src="assets/logo.svg" alt="Logo Hosanna Print" width="88" height="88">
-      <h1 class="hero__name">Hosanna Print</h1>
-      <p class="hero__tagline">Tlačíme s úctou k detailu</p>
-      <p class="hero__sub">Plagáty, vizitky, gravírovanie a viac. Malé štúdio, veľká starostlivosť.</p>
-      <a class="btn" href="#kontakt">Napíšte nám</a>
-      <p class="hero__meta">Gerlachov · Poprad</p>
-    </div>
-  </section>
+        <a class="brand" href="#uvod" aria-label="Hosanna print – späť na úvod">
+          <svg class="brand__logo" viewBox="0 0 1643 1645" aria-hidden="true"><use href="#i-logo"/></svg>
+        </a>
 
-  <section class="about" id="o-nas">
-    <div class="about__inner reveal">
-      <p class="about__eyebrow">O nás</p>
-      <p class="about__text">Sme Hosanna Print — malé rodinné štúdio z Popradu pod Tatrami. Tlačíme v malých sériách na kvalitných papieroch a každú zákazku pred odovzdaním prejdeme rukou. Názov Hosanna odkazuje na biblický výkrik radosti — palmová ratolesť v našom logu symbolizuje víťazstvo a vieru.</p>
-    </div>
-  </section>
+        <canvas class="printer-canvas" id="printer-canvas" aria-hidden="true"></canvas>
+        <img class="printer-fallback" src="assets/img/tlaciaren-referencia.jpg" alt="Tlačiareň štúdia Hosanna print" width="280" height="280">
+        <div class="stage-loader" aria-hidden="true"><span></span></div>
 
-  <section class="services" id="sluzby">
-    <div class="services__inner">
-      <div class="section-head reveal">
-        <p class="section-head__eyebrow">Služby</p>
-        <h2 class="section-head__title">Čo pre vás vyrobíme</h2>
-      </div>
-      <div class="services__grid">
+        <div class="hero-copy">
+          <p class="eyebrow eyebrow--light">Tlačiarenské a dizajnové štúdio</p>
+          <h1 class="hero-copy__title">Vaše nápady, <em>vytlačené</em> s&nbsp;láskou k&nbsp;detailu.</h1>
+          <p class="hero-copy__lead">Od prvého návrhu až po hotový výtlačok. Navrhneme, vytlačíme a&nbsp;doručíme tlačoviny, ktoré pôsobia prémiovo – vizitky, oznámenia, plagáty aj fotografie.</p>
+          <div class="hero-copy__actions">
+            <a class="btn btn--light" href="#kontakt">Poslať dopyt <svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg></a>
+            <a class="btn btn--ghost-light" href="#sluzby">Naše služby</a>
+          </div>
+        </div>
 
-        <article class="card reveal">
-          <span class="card__icon" aria-hidden="true">
-            <svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.4">
-              <rect x="6" y="4" width="16" height="22" rx="2"></rect>
-              <path d="M10 11h8M10 16h8M10 21h5"></path>
-            </svg>
-          </span>
-          <h3 class="card__title">Tlač</h3>
-          <ul class="card__list">
-            <li>Plagáty (A3 / A4, matné a lesklé)</li>
-            <li>Vizitky (rôzne gramáže a povrchy)</li>
-            <li>Letáky a brožúry</li>
-            <li>Menu karty pre reštaurácie</li>
-            <li>Pozvánky (svadby, krstiny, narodeniny)</li>
-            <li>Fotografie a art printy</li>
-            <li>Certifikáty a diplomy</li>
-            <li>Kartičky na spoločenské hry</li>
-          </ul>
-        </article>
-
-        <article class="card reveal">
-          <span class="card__icon" aria-hidden="true">
-            <svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.4">
-              <rect x="6" y="9" width="14" height="15" rx="3"></rect>
-              <path d="M20 13h3a3 3 0 0 1 0 6h-3"></path>
-            </svg>
-          </span>
-          <h3 class="card__title">Hrnčeky</h3>
-          <ul class="card__list">
-            <li>Hrnčeky s vlastným dizajnom</li>
-            <li>Hrnčeky s kresťanským motívom</li>
-          </ul>
-        </article>
-
-        <article class="card reveal">
-          <span class="card__icon" aria-hidden="true">
-            <svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.4">
-              <circle cx="16" cy="10" r="4"></circle>
-              <path d="M16 14v12M11 26h10M8 8l-3-3M24 8l3-3"></path>
-            </svg>
-          </span>
-          <h3 class="card__title">Laser gravírovanie</h3>
-          <ul class="card__list">
-            <li>Drevo (menovky, záložky, ozdoby, tabuľky)</li>
-            <li>Koža (kľúčenky, záložky)</li>
-            <li>Akryl (stojany, ceduľky)</li>
-            <li>Personalizované darčeky</li>
-          </ul>
-        </article>
-
-      </div>
-    </div>
-  </section>
-
-  <section class="steps" id="postup">
-    <div class="steps__inner">
-      <div class="section-head section-head--light reveal">
-        <p class="section-head__eyebrow">Ako to funguje</p>
-        <h2 class="section-head__title">Tri kroky k hotovej zákazke</h2>
-      </div>
-      <div class="steps__track" id="stepsTrack">
-        <div class="steps__rail" aria-hidden="true"><span class="steps__railFill" id="stepsFill"></span></div>
-        <ol class="steps__list">
-          <li class="step reveal">
-            <span class="step__num">01</span>
-            <div class="step__body">
-              <h3 class="step__text">Máte dizajn? Vytlačíme ho. Nemáte? Pripravíme vám ho.</h3>
-              <p class="step__desc">Ak máte hotové podklady, pošlite nám ich a skontrolujeme spadávky, rozlíšenie aj farby. Ak máte zatiaľ len nápad, navrhneme grafiku za vás — od vizitky po plagát či gravírovaný darček.</p>
-            </div>
-            <figure class="step__media">
-              <div class="step__frame"><!-- <img src="assets/krok-1.jpg" alt="Príprava podkladov" /> --></div>
-              <figcaption class="step__caption">Príprava podkladov</figcaption>
-            </figure>
+        <!-- Popisy fáz tlače – skutočný text (dostupný aj pre čítačky), JS prepína aktívnu fázu podľa scrollu -->
+        <ol class="story" aria-label="Ako vzniká tlač">
+          <li class="story__step" data-step="0">
+            <span class="story__num">01 · Vloženie papiera</span>
+            <h2 class="story__title">Všetko začína správnym papierom</h2>
+            <p class="story__text">Ku každej zákazke vyberáme papier podľa účelu – od jemného matného až po luxusný fine-art. Hárok vchádza do tlačiarne presne zarovnaný.</p>
           </li>
-          <li class="step reveal">
-            <span class="step__num">02</span>
-            <div class="step__body">
-              <h3 class="step__text">Dohodneme materiál, počet a termín</h3>
-              <p class="step__desc">Poradíme s papierom, gramážou a povrchom, potvrdíme cenu a dátum odovzdania. Pri väčších sériách pošleme vzorku vopred.</p>
-            </div>
-            <figure class="step__media">
-              <div class="step__frame"><!-- <img src="assets/krok-2.jpg" alt="Výber papiera" /> --></div>
-              <figcaption class="step__caption">Výber papiera a materiálu</figcaption>
-            </figure>
+          <li class="story__step" data-step="1">
+            <span class="story__num">02 · Pohyb valcov</span>
+            <h2 class="story__title">Presnosť na desatinu milimetra</h2>
+            <p class="story__text">Podávacie valce vedú papier rovnomerne a bez šmyku. Každá línia, okraj aj farebný prechod tak sedí presne tam, kde má.</p>
           </li>
-          <li class="step reveal">
-            <span class="step__num">03</span>
-            <div class="step__body">
-              <h3 class="step__text">Vytlačíme, skontrolujeme a odovzdáme</h3>
-              <p class="step__desc">Každú zákazku pred odovzdaním prejdeme rukou. Vyzdvihnete si ju v Gerlachove alebo vám ju pošleme.</p>
-            </div>
-            <figure class="step__media">
-              <div class="step__frame"><!-- <img src="assets/krok-3.jpg" alt="Hotová zákazka" /> --></div>
-              <figcaption class="step__caption">Hotová zákazka</figcaption>
-            </figure>
+          <li class="story__step" data-step="2">
+            <span class="story__num">03 · Nanášanie tlače</span>
+            <h2 class="story__title">Farby, ktoré ožijú na papieri</h2>
+            <p class="story__text">Tlačová hlava prechádza nad hárkom a riadok po riadku nanáša atrament v miliónoch drobných kvapiek. Výsledkom sú sýte farby a ostré detaily.</p>
+          </li>
+          <li class="story__step" data-step="3">
+            <span class="story__num">04 · Výstup produktu</span>
+            <h2 class="story__title">Hotové, skontrolované, vaše</h2>
+            <p class="story__text">Každý výtlačok si pred balením osobne prezrieme. Až keď je dokonalý, posielame ho k vám.</p>
           </li>
         </ol>
-      </div>
-    </div>
-  </section>
 
-  <!-- Galéria je zatiaľ skrytá — odkomentuj sekciu a nav odkaz, keď budú hotové fotky prác.
-  <section class="gallery" id="galeria">
-    <div class="gallery__inner">
-      <div class="section-head reveal">
-        <p class="section-head__eyebrow">Galéria</p>
-        <h2 class="section-head__title">Naše práce</h2>
-      </div>
-      <div class="gallery__grid">
-        <figure class="shot reveal"><div class="shot__frame"></div><figcaption class="shot__caption">Plagáty — už čoskoro</figcaption></figure>
-        <figure class="shot reveal"><div class="shot__frame"></div><figcaption class="shot__caption">Vizitky — už čoskoro</figcaption></figure>
-        <figure class="shot reveal"><div class="shot__frame"></div><figcaption class="shot__caption">Pozvánky — už čoskoro</figcaption></figure>
-        <figure class="shot reveal"><div class="shot__frame"></div><figcaption class="shot__caption">Hrnčeky — už čoskoro</figcaption></figure>
-        <figure class="shot reveal"><div class="shot__frame"></div><figcaption class="shot__caption">Gravírovanie na dreve — už čoskoro</figcaption></figure>
-        <figure class="shot reveal"><div class="shot__frame"></div><figcaption class="shot__caption">Kľúčenky z kože — už čoskoro</figcaption></figure>
-      </div>
-    </div>
-  </section>
-  -->
+        <div class="story-progress" aria-label="Fázy tlače">
+          <button class="story-progress__item" type="button" data-goto="0"><span class="story-progress__bar"></span><span class="story-progress__label">Papier</span></button>
+          <button class="story-progress__item" type="button" data-goto="1"><span class="story-progress__bar"></span><span class="story-progress__label">Valce</span></button>
+          <button class="story-progress__item" type="button" data-goto="2"><span class="story-progress__bar"></span><span class="story-progress__label">Tlač</span></button>
+          <button class="story-progress__item" type="button" data-goto="3"><span class="story-progress__bar"></span><span class="story-progress__label">Výstup</span></button>
+        </div>
 
-  <section class="contact" id="kontakt">
-    <div class="contact__inner">
-      <div class="contact__lead reveal">
-        <p class="section-head__eyebrow">Kontakt</p>
-        <h2 class="contact__title">Povedzte nám, čo potrebujete vytlačiť</h2>
-        <p class="contact__note">Ozvite sa e-mailom alebo telefonicky. Ozveme sa vám zvyčajne do jedného pracovného dňa.</p>
-        <a class="btn btn--ochre" href="mailto:hosanna.print.sk@gmail.com">Napíšte nám</a>
+        <p class="drag-hint" aria-hidden="true"><svg class="icon" aria-hidden="true"><use href="#i-drag"/></svg>Potiahnite myšou a&nbsp;otočte tlačiareň</p>
+
+        <a class="scroll-cue" href="#sluzby" aria-label="Posunúť nižšie">
+          <span class="scroll-cue__text">Scrollujte a pozrite sa, ako vzniká tlač</span>
+          <span class="scroll-cue__line" aria-hidden="true"></span>
+        </a>
       </div>
-      <div class="contact__details reveal">
-        <dl class="details">
-          <dt class="details__label">E-mail</dt>
-          <dd class="details__value"><a href="mailto:hosanna.print.sk@gmail.com">hosanna.print.sk@gmail.com</a></dd>
-          <dt class="details__label">Telefón</dt>
-          <dd class="details__value"><a href="tel:+421949144644">0949 144 644</a></dd>
-        </dl>
-        <div class="social">
-          <a class="social__link" href="https://instagram.com/hosanna.print" target="_blank" rel="noopener">
-            <svg class="social__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"></rect><circle cx="12" cy="12" r="4"></circle><circle cx="17.2" cy="6.8" r="1" fill="currentColor" stroke="none"></circle></svg>
-            <span>@hosanna.print</span>
-          </a>
-          <a class="social__link" href="https://facebook.com/hosannaprint" target="_blank" rel="noopener">
-            <svg class="social__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"></rect><path d="M15 8h-1.6A2.4 2.4 0 0 0 11 10.4V21M9 13h5"></path></svg>
-            <span>Hosanna Print</span>
-          </a>
+    </section>
+
+    <!-- ============ 3) SLUŽBY ============ -->
+    <section id="sluzby" class="section services" aria-labelledby="sluzby-title">
+      <div class="container">
+        <header class="section-head" data-reveal>
+          <p class="eyebrow">Služby</p>
+          <h2 class="section-title" id="sluzby-title">Všetko pre vašu tlač pod jednou strechou</h2>
+          <p class="section-lead">Tlačíme priamo v štúdiu na kvalitných papieroch a ku každej zákazke vieme pripraviť aj grafický návrh. Vyberte si, s čím vám môžeme pomôcť.</p>
+        </header>
+
+        <div class="services-group">
+          <div class="services-group__head" data-reveal>
+            <h3 class="services-group__title">Tlačiarenské služby</h3>
+            <p class="services-group__text">Tlačíme v štúdiu, každý kus kontrolujeme ručne.</p>
+          </div>
+          <ul class="cards" role="list">
+            <li class="card" data-reveal>
+              <span class="card__icon"><svg aria-hidden="true"><use href="#i-print"/></svg></span>
+              <h4 class="card__title">Digitálna tlač</h4>
+              <p class="card__text">Letáky, plagáty, brožúry či katalógy v&nbsp;malých aj stredných nákladoch. Rýchlo, ostro a&nbsp;vo vernej farebnosti.</p>
+              <ul class="tags" role="list"><li>Letáky</li><li>Plagáty</li><li>Brožúry</li></ul>
+            </li>
+            <li class="card" data-reveal>
+              <span class="card__icon"><svg aria-hidden="true"><use href="#i-card"/></svg></span>
+              <h4 class="card__title">Vizitky a firemné tlačoviny</h4>
+              <p class="card__text">Vizitky, hlavičkové papiere, obálky a&nbsp;pozvánky na prémiových papieroch, ktoré zanechajú dojem.</p>
+              <ul class="tags" role="list"><li>Vizitky</li><li>Hlavičkový papier</li><li>Obálky</li></ul>
+            </li>
+            <li class="card" data-reveal>
+              <span class="card__icon"><svg aria-hidden="true"><use href="#i-photo"/></svg></span>
+              <h4 class="card__title">Fotografická a fine-art tlač</h4>
+              <p class="card__text">Fotografie a&nbsp;umelecké reprodukcie na matných, lesklých aj štruktúrovaných papieroch až do formátu A3+.</p>
+              <ul class="tags" role="list"><li>Fotografie</li><li>Obrazy</li><li>A3+</li></ul>
+            </li>
+            <li class="card" data-reveal>
+              <span class="card__icon"><svg aria-hidden="true"><use href="#i-envelope"/></svg></span>
+              <h4 class="card__title">Svadobné a slávnostné tlačoviny</h4>
+              <p class="card__text">Oznámenia, pozvánky, menu, menovky či poďakovania – zladené do jedného štýlu pre váš veľký deň.</p>
+              <ul class="tags" role="list"><li>Oznámenia</li><li>Pozvánky</li><li>Menovky</li></ul>
+            </li>
+            <li class="card" data-reveal>
+              <span class="card__icon"><svg aria-hidden="true"><use href="#i-tag"/></svg></span>
+              <h4 class="card__title">Etikety a nálepky</h4>
+              <p class="card__text">Produktové etikety, nálepky a&nbsp;visačky pre malé značky, e-shopy aj domácu výrobu.</p>
+              <ul class="tags" role="list"><li>Etikety</li><li>Nálepky</li><li>Visačky</li></ul>
+            </li>
+            <li class="card" data-reveal>
+              <span class="card__icon"><svg aria-hidden="true"><use href="#i-calendar"/></svg></span>
+              <h4 class="card__title">Personalizované tlačoviny</h4>
+              <p class="card__text">Kalendáre, pohľadnice, darčekové poukážky či plánovače s&nbsp;vaším menom, fotkou alebo logom.</p>
+              <ul class="tags" role="list"><li>Kalendáre</li><li>Pohľadnice</li><li>Poukážky</li></ul>
+            </li>
+          </ul>
+        </div>
+
+        <div class="services-group services-group--design">
+          <div class="services-group__head" data-reveal>
+            <h3 class="services-group__title">Grafický dizajn</h3>
+            <p class="services-group__text">Nemáte podklady? Navrhneme ich za vás – od loga až po hotové tlačové dáta.</p>
+          </div>
+          <ul class="cards cards--four" role="list">
+            <li class="card" data-reveal>
+              <span class="card__icon"><svg aria-hidden="true"><use href="#i-nib"/></svg></span>
+              <h4 class="card__title">Logo a vizuálna identita</h4>
+              <p class="card__text">Navrhneme logo, farby a&nbsp;typografiu, ktoré vystihnú vašu značku a&nbsp;budú fungovať na webe aj v&nbsp;tlači.</p>
+            </li>
+            <li class="card" data-reveal>
+              <span class="card__icon"><svg aria-hidden="true"><use href="#i-layout"/></svg></span>
+              <h4 class="card__title">Návrh tlačovín</h4>
+              <p class="card__text">Od vizitky po katalóg – pripravíme grafiku, ktorá upúta a&nbsp;zároveň jasne komunikuje.</p>
+            </li>
+            <li class="card" data-reveal>
+              <span class="card__icon"><svg aria-hidden="true"><use href="#i-filecheck"/></svg></span>
+              <h4 class="card__title">Príprava dát na tlač</h4>
+              <p class="card__text">Skontrolujeme a&nbsp;upravíme vaše súbory – rozlíšenie, spadávku, farebný profil aj písma. Bez nepríjemných prekvapení.</p>
+            </li>
+            <li class="card" data-reveal>
+              <span class="card__icon"><svg aria-hidden="true"><use href="#i-wand"/></svg></span>
+              <h4 class="card__title">Retuš a úprava fotografií</h4>
+              <p class="card__text">Farebné korekcie, retuš a&nbsp;príprava fotografií, aby na papieri vyzerali ešte lepšie než na obrazovke.</p>
+            </li>
+          </ul>
         </div>
       </div>
-    </div>
-    <footer class="footer">
-      <div class="footer__inner">
-        <a class="footer__brand" href="#hero">
-          <img class="footer__logo" src="assets/logo.svg" alt="" width="26" height="26">
-          <span>Hosanna Print</span>
-        </a>
-        <p class="footer__copy">© 2026 Hosanna Print · Gerlachov / Poprad</p>
+    </section>
+
+    <!-- ============ 4) POSTUP SPOLUPRÁCE ============ -->
+    <section id="postup" class="section process" aria-labelledby="postup-title">
+      <div class="container">
+        <header class="section-head section-head--center" data-reveal>
+          <p class="eyebrow eyebrow--light">Postup spolupráce</p>
+          <h2 class="section-title section-title--light" id="postup-title">Od nápadu až k&nbsp;vám domov v&nbsp;štyroch krokoch</h2>
+          <p class="process__lead">Jednoducho, prehľadne a&nbsp;bez starostí. O&nbsp;všetko ostatné sa postaráme my.</p>
+        </header>
+
+        <ol class="steps" data-steps>
+          <li class="step" data-reveal>
+            <span class="step__num" aria-hidden="true">01</span>
+            <span class="step__icon"><svg aria-hidden="true"><use href="#i-chat"/></svg></span>
+            <h3 class="step__title"><span class="visually-hidden">Krok 1: </span>Pošlete nám svoju predstavu</h3>
+            <p class="step__text">Vyplňte formulár alebo nám napíšte. Stačí pár slov, náčrt či fotka – spolu z&nbsp;toho vytvoríme zadanie.</p>
+          </li>
+          <li class="step" data-reveal>
+            <span class="step__num" aria-hidden="true">02</span>
+            <span class="step__icon"><svg aria-hidden="true"><use href="#i-pen"/></svg></span>
+            <h3 class="step__title"><span class="visually-hidden">Krok 2: </span>Spracujeme ju graficky</h3>
+            <p class="step__text">Pripravíme návrh a&nbsp;pošleme vám náhľad. Upravujeme, kým nie ste úplne spokojní.</p>
+          </li>
+          <li class="step" data-reveal>
+            <span class="step__num" aria-hidden="true">03</span>
+            <span class="step__icon"><svg aria-hidden="true"><use href="#i-print"/></svg></span>
+            <h3 class="step__title"><span class="visually-hidden">Krok 3: </span>Vytlačíme</h3>
+            <p class="step__text">Po schválení tlačíme na starostlivo vybraných papieroch a&nbsp;každý výtlačok kontrolujeme.</p>
+          </li>
+          <li class="step" data-reveal>
+            <span class="step__num" aria-hidden="true">04</span>
+            <span class="step__icon"><svg aria-hidden="true"><use href="#i-truck"/></svg></span>
+            <h3 class="step__title"><span class="visually-hidden">Krok 4: </span>Odošleme k&nbsp;vám domov</h3>
+            <p class="step__text">Tlačoviny bezpečne zabalíme a&nbsp;pošleme kuriérom až k&nbsp;vašim dverám.</p>
+          </li>
+        </ol>
+
+        <div class="process__cta" data-reveal>
+          <a class="btn btn--light" href="#kontakt">Začnime prvým krokom <svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg></a>
+        </div>
       </div>
-    </footer>
-  </section>
+    </section>
 
-</main>
+    <!-- ============ 5) KARUSEL LOGOV KLIENTOV ============
+         Logá zatiaľ neboli dodané, preto sú tu jasne označené zástupné miesta.
+         Výmena: obsah <li class="logo-slot"> nahraďte obrázkom, napr.
+         <li class="logo-slot logo-slot--filled"><img src="assets/clients/firma.svg" alt="Názov firmy" loading="lazy"></li>
+         Kópie pre plynulú nekonečnú slučku vytvára JS automaticky. -->
+    <section id="klienti" class="section clients" aria-labelledby="klienti-title">
+      <div class="container">
+        <header class="section-head section-head--center" data-reveal>
+          <p class="eyebrow">Klienti</p>
+          <h2 class="section-title" id="klienti-title">Spolupracovali sme s</h2>
+          <p class="section-lead">Ďakujeme firmám aj jednotlivcom, ktorí nám zverili svoje tlačoviny.</p>
+        </header>
+      </div>
 
-<script src="js/main.js" defer></script>
+      <div class="carousel" data-carousel aria-roledescription="karusel" aria-label="Logá klientov">
+        <div class="carousel__viewport">
+          <ul class="carousel__track" role="list" data-carousel-track>
+            <li class="logo-slot"><span class="logo-slot__name">Logo klienta 01</span><span class="logo-slot__note">zástupné miesto</span></li>
+            <li class="logo-slot"><span class="logo-slot__name">Logo klienta 02</span><span class="logo-slot__note">zástupné miesto</span></li>
+            <li class="logo-slot"><span class="logo-slot__name">Logo klienta 03</span><span class="logo-slot__note">zástupné miesto</span></li>
+            <li class="logo-slot"><span class="logo-slot__name">Logo klienta 04</span><span class="logo-slot__note">zástupné miesto</span></li>
+            <li class="logo-slot"><span class="logo-slot__name">Logo klienta 05</span><span class="logo-slot__note">zástupné miesto</span></li>
+            <li class="logo-slot"><span class="logo-slot__name">Logo klienta 06</span><span class="logo-slot__note">zástupné miesto</span></li>
+            <li class="logo-slot"><span class="logo-slot__name">Logo klienta 07</span><span class="logo-slot__note">zástupné miesto</span></li>
+            <li class="logo-slot"><span class="logo-slot__name">Logo klienta 08</span><span class="logo-slot__note">zástupné miesto</span></li>
+          </ul>
+        </div>
+        <div class="carousel__controls">
+          <button class="icon-btn" type="button" data-carousel-prev aria-label="Predchádzajúce logo"><svg aria-hidden="true"><use href="#i-chev-left"/></svg></button>
+          <button class="icon-btn" type="button" data-carousel-toggle aria-label="Pozastaviť posúvanie" aria-pressed="false">
+            <svg class="icon--pause" aria-hidden="true"><use href="#i-pause"/></svg>
+            <svg class="icon--play" aria-hidden="true"><use href="#i-play"/></svg>
+          </button>
+          <button class="icon-btn" type="button" data-carousel-next aria-label="Ďalšie logo"><svg aria-hidden="true"><use href="#i-chev-right"/></svg></button>
+        </div>
+      </div>
+    </section>
 
+    <!-- ============ 6) KONTAKTNÝ FORMULÁR (DOPYT) ============ -->
+    <section id="kontakt" class="section contact" aria-labelledby="kontakt-title">
+      <div class="container contact__grid">
+        <div class="contact__info" data-reveal>
+          <p class="eyebrow">Kontakt</p>
+          <h2 class="section-title" id="kontakt-title">Pošlite nám nezáväzný dopyt</h2>
+          <p class="section-lead">Napíšte nám, čo potrebujete. Ozveme sa vám spravidla do 24&nbsp;hodín s&nbsp;návrhom riešenia a&nbsp;cenovou ponukou.</p>
+
+          <!-- ZMEŇTE: kontaktné údaje sú ukážkové – nahraďte ich skutočnými údajmi štúdia. -->
+          <ul class="contact-list" role="list">
+            <li>
+              <span class="contact-list__icon"><svg aria-hidden="true"><use href="#i-mail"/></svg></span>
+              <span><span class="contact-list__label">E-mail</span><a href="mailto:info@hosannaprint.sk" data-contact-email>info@hosannaprint.sk</a></span>
+            </li>
+            <li>
+              <span class="contact-list__icon"><svg aria-hidden="true"><use href="#i-phone"/></svg></span>
+              <span><span class="contact-list__label">Telefón</span><a href="tel:+421900000000">+421 900 000 000</a></span>
+            </li>
+            <li>
+              <span class="contact-list__icon"><svg aria-hidden="true"><use href="#i-pin"/></svg></span>
+              <span><span class="contact-list__label">Štúdio</span>Hlavná 1, 010 01 Žilina</span>
+            </li>
+            <li>
+              <span class="contact-list__icon"><svg aria-hidden="true"><use href="#i-clock"/></svg></span>
+              <span><span class="contact-list__label">Otváracie hodiny</span>Po – Pi: 9:00 – 17:00</span>
+            </li>
+          </ul>
+        </div>
+
+        <div class="form-card" data-reveal>
+          <!-- Formulár: action ukazuje na send.php (odoslanie e-mailom na serveri s PHP).
+               main.js ho odosiela cez fetch bez obnovenia stránky; bez JS funguje aj klasické odoslanie. -->
+          <form class="inquiry" id="inquiry-form" action="send.php" method="post" novalidate data-inquiry>
+            <div class="inquiry__head">
+              <h3 class="inquiry__title">Formulár dopytu</h3>
+              <span class="badge">Nezáväzný dopyt</span>
+            </div>
+
+            <div class="form-alert" role="alert" aria-live="assertive" hidden data-form-alert></div>
+
+            <div class="field">
+              <label class="field__label" for="f-name">Meno a priezvisko <span class="req" aria-hidden="true">*</span></label>
+              <input class="field__input" id="f-name" name="name" type="text" autocomplete="name" required minlength="2" maxlength="80" placeholder="Napr. Jana Nováková" aria-describedby="f-name-err">
+              <p class="field__error" id="f-name-err" data-error-for="name"></p>
+            </div>
+
+            <div class="field-row">
+              <div class="field">
+                <label class="field__label" for="f-email">E-mail <span class="req" aria-hidden="true">*</span></label>
+                <input class="field__input" id="f-email" name="email" type="email" autocomplete="email" inputmode="email" required maxlength="120" placeholder="vas@email.sk" aria-describedby="f-email-err">
+                <p class="field__error" id="f-email-err" data-error-for="email"></p>
+              </div>
+              <div class="field">
+                <label class="field__label" for="f-phone">Telefón <span class="field__optional">(nepovinné)</span></label>
+                <input class="field__input" id="f-phone" name="phone" type="tel" autocomplete="tel" inputmode="tel" maxlength="24" placeholder="+421 900 123 456" aria-describedby="f-phone-err">
+                <p class="field__error" id="f-phone-err" data-error-for="phone"></p>
+              </div>
+            </div>
+
+            <div class="field">
+              <label class="field__label" for="f-message">Váš dopyt <span class="req" aria-hidden="true">*</span></label>
+              <textarea class="field__input field__input--area" id="f-message" name="message" rows="5" required minlength="10" maxlength="2000" placeholder="Čo potrebujete vytlačiť alebo navrhnúť? Formát, počet kusov, papier, termín…" aria-describedby="f-message-err f-message-count"></textarea>
+              <div class="field__meta">
+                <p class="field__error" id="f-message-err" data-error-for="message"></p>
+                <span class="field__count" id="f-message-count" aria-live="polite" data-count>0 / 2000</span>
+              </div>
+            </div>
+
+            <div class="field field--check">
+              <label class="check">
+                <input type="checkbox" name="consent" value="1" required aria-describedby="f-consent-err">
+                <span class="check__box" aria-hidden="true"><svg><use href="#i-check"/></svg></span>
+                <span class="check__text">Súhlasím so spracovaním osobných údajov na účel vybavenia dopytu. <span class="req" aria-hidden="true">*</span></span>
+              </label>
+              <p class="field__error" id="f-consent-err" data-error-for="consent"></p>
+            </div>
+
+            <!-- Ochrana proti spamu: skryté pole (honeypot) – človek ho nevidí ani nevyplní -->
+            <div class="hp" aria-hidden="true">
+              <label for="f-website">Webstránka</label>
+              <input id="f-website" name="website" type="text" tabindex="-1" autocomplete="off">
+            </div>
+
+            <button class="btn btn--primary btn--block" type="submit" data-submit>
+              <span class="btn__label">Odoslať dopyt</span>
+              <span class="btn__spinner" aria-hidden="true"></span>
+              <svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg>
+            </button>
+            <p class="inquiry__note">Polia označené <span class="req">*</span> sú povinné. Údaje použijeme len na odpoveď na váš dopyt.</p>
+          </form>
+
+          <!-- Potvrdenie po úspešnom odoslaní -->
+          <div class="inquiry-success" hidden tabindex="-1" data-success>
+            <svg class="inquiry-success__check" viewBox="0 0 52 52" aria-hidden="true"><circle cx="26" cy="26" r="24"/><path d="m15 27 7.5 7.5L37.5 19"/></svg>
+            <h3 class="inquiry-success__title">Ďakujeme, dopyt sme prijali!</h3>
+            <p class="inquiry-success__text" data-success-text>Ozveme sa vám čo najskôr, spravidla do 24 hodín.</p>
+            <div class="inquiry-success__actions" data-success-actions></div>
+            <button class="btn btn--outline" type="button" data-reset>Poslať ďalší dopyt</button>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container site-footer__grid">
+      <div class="site-footer__brand">
+        <svg class="site-footer__logo" viewBox="0 0 1643 1645" aria-hidden="true"><use href="#i-logo"/></svg>
+        <div>
+          <p class="site-footer__name">Hosanna print</p>
+          <p class="site-footer__tag">Tlačiarenské a dizajnové štúdio</p>
+        </div>
+      </div>
+      <nav aria-label="Odkazy v pätičke">
+        <ul class="site-footer__links" role="list">
+          <li><a href="#sluzby">Služby</a></li>
+          <li><a href="#postup">Postup</a></li>
+          <li><a href="#klienti">Klienti</a></li>
+          <li><a href="#kontakt">Kontakt</a></li>
+        </ul>
+      </nav>
+      <p class="site-footer__copy">© <span data-year>2026</span> Hosanna print. Všetky práva vyhradené.</p>
+    </div>
+  </footer>
+
+  <script src="js/main.js" defer></script>
+  <script src="js/printer3d.js" defer></script>
 </body>
 </html>
