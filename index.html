@@ -523,10 +523,6 @@ a:hover{color:#16201A}
           <span style="flex:none;width:48px;height:48px;border-radius:12px;border:1px solid #D3D9CF;background:#FFFFFF;display:flex;align-items:center;justify-content:center"><span style="width:19px;height:19px;background:#2A3A30;mask-image:url(vendor/icons/phone.svg);mask-size:contain;mask-repeat:no-repeat;mask-position:center"></span></span>
           <span style="display:flex;flex-direction:column;gap:3px;min-width:0"><span style="font-size:11px;font-weight:600;letter-spacing:0.16em;color:#5E5A54">TELEFÓN</span><span style="font-size:17px;font-weight:500;line-height:1.35;overflow-wrap:anywhere">+421 949 144 644</span></span>
         </a>
-        <a href="https://wa.me/421949144644" target="_blank" rel="noopener" style="display:flex;align-items:center;gap:16px;color:#16201A" style-hover="color:#2A3A30">
-          <span style="flex:none;width:48px;height:48px;border-radius:12px;border:1px solid #D3D9CF;background:#FFFFFF;display:flex;align-items:center;justify-content:center"><span style="width:19px;height:19px;background:#2A3A30;mask-image:url(vendor/icons/message-circle.svg);mask-size:contain;mask-repeat:no-repeat;mask-position:center"></span></span>
-          <span style="display:flex;flex-direction:column;gap:3px;min-width:0"><span style="font-size:11px;font-weight:600;letter-spacing:0.16em;color:#5E5A54">WHATSAPP</span><span style="font-size:17px;font-weight:500;line-height:1.35;overflow-wrap:anywhere">Napíšte nám na WhatsApp</span></span>
-        </a>
         <a href="https://instagram.com/hosanna.print" target="_blank" rel="noopener" style="display:flex;align-items:center;gap:16px;color:#16201A" style-hover="color:#2A3A30">
           <span style="flex:none;width:48px;height:48px;border-radius:12px;border:1px solid #D3D9CF;background:#FFFFFF;display:flex;align-items:center;justify-content:center"><span style="width:19px;height:19px;background:#2A3A30;mask-image:url(vendor/icons/instagram.svg);mask-size:contain;mask-repeat:no-repeat;mask-position:center"></span></span>
           <span style="display:flex;flex-direction:column;gap:3px;min-width:0"><span style="font-size:11px;font-weight:600;letter-spacing:0.16em;color:#5E5A54">INSTAGRAM</span><span style="font-size:17px;font-weight:500;line-height:1.35;overflow-wrap:anywhere">@hosanna.print</span></span>
@@ -665,18 +661,21 @@ class Component extends DCLogic {
     const cw = (box && box.offsetWidth) || 0;
     if (!cw) return;
     if (el !== this._mqEl) { this._mqEl = el; this._mqUnit = el.firstElementChild.cloneNode(true); this._mqCW = 0; }
-    if (cw === this._mqCW && el.children.length === this._mqNeed && this.mqAnim) return;
+    if (cw === this._mqCW && this.mqAnim) return;
     this._mqCW = cw;
-    while (el.children.length > 1) el.removeChild(el.lastElementChild);
     const unitW = el.firstElementChild.getBoundingClientRect().width;
     if (!unitW) return;
     const need = Math.ceil(cw / unitW) + 1;
-    for (let i = 1; i < need; i++) {
+    // DOM upravuj len ked treba - prebytocne prestavanie sposobuje bliknutie masiek
+    while (el.children.length > need) el.removeChild(el.lastElementChild);
+    while (el.children.length < need) {
       const c = this._mqUnit.cloneNode(true);
       c.setAttribute('aria-hidden', 'true');
       el.appendChild(c);
     }
     this._mqNeed = need;
+    if (this.mqAnim && Math.abs(this._mqUnitW - unitW) < 0.5) { this._mqUnitW = unitW; return; }
+    this._mqUnitW = unitW;
     if (this.mqAnim) this.mqAnim.cancel();
     this.mqAnim = el.animate(
       [{ transform: 'translateX(0)' }, { transform: 'translateX(' + (-unitW) + 'px)' }],
@@ -901,8 +900,8 @@ class Component extends DCLogic {
           showClients: list.length > 0, clientList: list,
           clientsMarquee: marquee, clientsStatic: list.length > 0 && !marquee,
           marqueeRef: this.marqueeRef,
-          marqueeEnter: () => this.rampMarquee(0, 300),
-          marqueeLeave: () => this.rampMarquee(1, 400),
+          marqueeEnter: () => { if (window.matchMedia && window.matchMedia('(hover: hover)').matches) this.rampMarquee(0, 300); },
+          marqueeLeave: () => { if (window.matchMedia && window.matchMedia('(hover: hover)').matches) this.rampMarquee(1, 400); },
           logoGap: mobile ? '56px' : '96px',
           barH: mobile ? '120px' : '180px',
           barPad: mobile ? '28px 0' : '44px 0',
