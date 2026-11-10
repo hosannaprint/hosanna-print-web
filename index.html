@@ -91,7 +91,7 @@ a:hover{color:#16201A}
     <img src="assets/hero-poster.webp" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center">
     <sc-if value="{{ useVideo }}" hint-placeholder-val="{{ false }}">
       <video ref="{{ videoRef }}" autoplay="{{ true }}" muted="{{ true }}" loop="{{ true }}" playsinline="{{ true }}" preload="metadata" poster="assets/hero-poster.webp" aria-hidden="true" onPlaying="{{ onVidPlay }}" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center;opacity:{{ vidOp }};transition:opacity 800ms cubic-bezier(0.22, 1, 0.36, 1)">
-        <source src="uploads/hosanna-hero-video.webm" type="video/webm">
+        <source media="(max-width: 767px)" src="uploads/hosanna-hero-video-m.webm" type="video/webm"><source media="(max-width: 767px)" src="uploads/hosanna-hero-video-m.mp4" type="video/mp4"><source src="uploads/hosanna-hero-video.webm" type="video/webm"><source src="uploads/hosanna-hero-video.mp4" type="video/mp4">
       </video>
     </sc-if>
   </div>
@@ -660,10 +660,27 @@ class Component extends DCLogic {
   }
   startMarquee() {
     const el = this.marqueeRef.current;
-    if (!el || el === this._mqEl || !el.animate) return;
-    this._mqEl = el;
+    if (!el || !el.animate || !el.firstElementChild) return;
+    const box = el.parentElement;
+    const cw = (box && box.offsetWidth) || 0;
+    if (!cw) return;
+    if (el !== this._mqEl) { this._mqEl = el; this._mqUnit = el.firstElementChild.cloneNode(true); this._mqCW = 0; }
+    if (cw === this._mqCW && el.children.length === this._mqNeed && this.mqAnim) return;
+    this._mqCW = cw;
+    while (el.children.length > 1) el.removeChild(el.lastElementChild);
+    const unitW = el.firstElementChild.getBoundingClientRect().width;
+    if (!unitW) return;
+    const need = Math.ceil(cw / unitW) + 1;
+    for (let i = 1; i < need; i++) {
+      const c = this._mqUnit.cloneNode(true);
+      c.setAttribute('aria-hidden', 'true');
+      el.appendChild(c);
+    }
+    this._mqNeed = need;
     if (this.mqAnim) this.mqAnim.cancel();
-    this.mqAnim = el.animate([{ transform: 'translateX(0)' }, { transform: 'translateX(-50%)' }], { duration: 40000, iterations: Infinity, easing: 'linear' });
+    this.mqAnim = el.animate(
+      [{ transform: 'translateX(0)' }, { transform: 'translateX(' + (-unitW) + 'px)' }],
+      { duration: Math.max(14000, Math.round(unitW * 26)), iterations: Infinity, easing: 'linear' });
   }
   rampMarquee(to, ms) {
     const a = this.mqAnim; if (!a) return;
@@ -683,7 +700,12 @@ class Component extends DCLogic {
     this._v = v;
     v.muted = true; v.defaultMuted = true; v.loop = true; v.autoplay = true; v.playsInline = true;
     v.setAttribute('muted', ''); v.setAttribute('loop', ''); v.setAttribute('playsinline', ''); v.setAttribute('autoplay', '');
-    const p = v.play(); if (p && p.catch) p.catch(() => {});
+    const tryPlay = () => { const p = v.play(); if (p && p.catch) p.catch(() => {}); };
+    tryPlay();
+    const retry = () => { if (v.paused) tryPlay(); };
+    ['touchstart', 'pointerdown', 'click'].forEach((ev) =>
+      window.addEventListener(ev, retry, { once: true, passive: true }));
+    document.addEventListener('visibilitychange', () => { if (!document.hidden) retry(); });
   }
   componentDidUpdate() { this.galBindDrag(); this.initVideo(); this.startMarquee(); if (!this.marqueeRef.current) this._mqEl = null; }
 
@@ -888,7 +910,7 @@ class Component extends DCLogic {
         };
       })(),
       heroBgRef: this.heroBgRef, heroDimRef: this.heroDimRef, videoRef: this.videoRef, cueRef: this.cueRef,
-      useVideo: !this.state.small && !red,
+      useVideo: !red,
       vidOp: this.state.vidReady ? 1 : 0,
       onVidPlay: () => { if (!this.state.vidReady) this.setState({ vidReady: true }); },
       vidPlaying: !this.state.vidPaused,
