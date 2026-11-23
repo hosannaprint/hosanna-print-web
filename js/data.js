@@ -10,5 +10,6 @@ export const clients = [
   { src: 'assets/clients/monks-and-freaks.svg', name: 'Monks and Freaks', height: 30 },
   { src: 'assets/clients/optika-krigovsky.svg', name: 'Optika Krigovský', height: 39 },
   { src: 'assets/clients/mladez-baptisticka.svg', name: 'Mládež Baptistickej cirkvi', height: 37 },
+  { src: 'assets/clients/ecav-batizovce-gerlachov.svg', name: 'ECAV Batizovce-Gerlachov', height: 44 },
   { src: 'assets/clients/sem.svg', name: 'SEM', height: 22 },
 ];
